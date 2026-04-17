@@ -1,25 +1,18 @@
 import streamlit as st
 import mysql.connector
+import mysql.connector
+import pandas as pd
 
-#Change the host to the IP address when we use a remote server.
-connection = mysql.connector.connect(host="localhost",user="root", password="",database="test")
+connection = mysql.connector.connect(
+    host="10.212.175.85",
+    user="teamplayer",
+    password="hawktuah1",
+    database="playground")
 
-#Function for the Create part of CRUD
-def create_entry():
-    pass
+st.set_page_config(
+    page_title="Fitness Tracking App",
+    layout="wide"
+)
 
-#Function for the Read part of CRUD
-def read_entry():
-    pass
 
-#Function for the Update part of CRUD
-def update_entry():
-    pass
-
-#Function for the Delete part of CRUD
-def delete_entry():
-    pass
-
-#Closes the connection once the program exits.
-connection.close()
-
+cursor = connection.cursor()
