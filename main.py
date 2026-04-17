@@ -14,5 +14,24 @@ st.set_page_config(
     layout="wide"
 )
 
+if not connection.is_connected:
+    print("Error connecting to MySQL database.")
+    quit(0)
+
+userTables = "User","Workout","WorkoutEntry","Exercise"
+goalTables = "Goal","WeightGoal","SleepGoal","RunningGoal","StrengthGoal"
+healthTables = "HealthMetric"
+
+def read_table(name, conn):
+    query = f"SELECT * FROM {name}"
+    return pd.read_sql(query, conn)
+
+
+healthButton = st.button("Health")
+goalsButton = st.button("Goals")
+userButton = st.button("User")
+
+def initialize_webclient():
+    pass
 
 cursor = connection.cursor()
