@@ -15,9 +15,9 @@ Run
 .venv\Scripts\activate.bat
 ```
 
-Then, use pip to install streamlit:
+Then, use pip to install streamlit and its dependencies:
 ```
-pip install streamlit
+pip install -r streamlit_app/requirements.txt
 ```
 
 That should be everything, to execute the program run
