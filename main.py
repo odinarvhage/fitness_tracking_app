@@ -1,7 +1,11 @@
+from asyncio import all_tasks
+
 import streamlit as st
 import mysql.connector
 import mysql.connector
-import pandas as pd
+
+
+import tables
 
 connection = mysql.connector.connect(
     host="10.212.175.85",
@@ -14,17 +18,36 @@ st.set_page_config(
     layout="wide"
 )
 
+
+def table_exists(table_name, conn):
+    query = """
+       SELECT COUNT(*)
+       FROM information_schema.tables
+       WHERE table_schema = %s
+         AND table_name = %s
+       """
+    cursor = conn.cursor()
+    cursor.execute(query, (conn.database, table_name))
+    exists = cursor.fetchone()[0] == 1
+    cursor.close()
+    return exists
+
+
+
 if not connection.is_connected:
     print("Error connecting to MySQL database.")
     quit(0)
 
-userTables = "User","Workout","WorkoutEntry","Exercise"
-goalTables = "Goal","WeightGoal","SleepGoal","RunningGoal","StrengthGoal"
-healthTables = "HealthMetric"
+def init():
+    all_tables = tables.get_tables()
+    for tableArray in all_tables:
+        for table in tableArray:
+            if table_exists(table, connection):
+                print("Table {} exists.".format(table))
+            else:
+                print("Table {} does not exist.".format(table))
+                print("Creating table {}.".format(table))
 
-def read_table(name, conn):
-    query = f"SELECT * FROM {name}"
-    return pd.read_sql(query, conn)
 
 
 healthButton = st.button("Health")
@@ -34,4 +57,3 @@ userButton = st.button("User")
 def initialize_webclient():
     pass
 
-cursor = connection.cursor()
