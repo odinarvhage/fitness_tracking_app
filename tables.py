@@ -1,7 +1,7 @@
 
 import pandas as pd
-userTables = "User","Workout","WorkoutEntry","Exercise","HealthMetric"
-goalTables = "Goal","WeightGoal","SleepGoal","RunningGoal","StrengthGoal"
+userTables = "users","workout","workout_entries","exercises","health_metric"
+goalTables = "goals","weight_goals","sleep_goals","running_goals","strength_goals"
 allTables = userTables,goalTables
 
 def get_tables():
