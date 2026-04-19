@@ -30,6 +30,7 @@ def read_table(name):
     query = f"SELECT * FROM {name}"
     cursor = connection.cursor()
     cursor.execute(query)
+    print("Fetched table " + name)
     rows = cursor.fetchall()
     columns = [col[0] for col in cursor.description]
     cursor.close()
@@ -39,16 +40,12 @@ def read_table(name):
     return df
 
 def create_entry(table, values):
-    cursor = connection.cursor()
-    columns = read_table(table).columns
-    col_string = ", ".join(columns)
-    placeholders = ", ".join(["%s"] * (len(columns)-1))
-    query = f"INSERT INTO {table} ({col_string}) VALUES ({placeholders})"
-    print("Executing:", query)
-    print("Values:", values)
-    cursor.execute(query, values)
-    connection.commit()
-    cursor.close()
+    pass
+
+def get_insertable_columns(table_name, db_tables):
+    columns = db_tables[table_name]
+    AUTO_SKIP = {"user_id", "workout_id", "metric_id"}
+    return [col for col in columns if col not in AUTO_SKIP]
 
 @st.dialog("CREATE entry")
 def make_entry_dialog():
