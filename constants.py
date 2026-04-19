@@ -73,8 +73,14 @@ UPDATE_TABLE = {
 }
 
 CREATE_TABLE = {
-    "users": [
-         "name", "email", "password", "gender", "date_of_birth", "height"
+    "User": [
+        "Name","Password", "Email", "Gender", "Height", "Date of birth"
+    ],
+    "Workout": [
+        "Duration", "Type", "Calories burned", "Date"
+    ],
+    "Health metric": [
+        "Weight", "Resting heart rate", "Average sleep", "Steps", "Date"
     ]
 }
 
