@@ -7,7 +7,7 @@ import constants
 import mysql.connector
 from dotenv import load_dotenv
 
-tables = constants.tables
+tables = constants.DB_TABLE_COLUMNS
 load_dotenv()
 
 ip = os.getenv("DB_IP")
@@ -56,6 +56,7 @@ def table_exists(table_name):
     return exists
 
 def status_check():
+
     for table_Array in tables:
      if table_exists(table_Array):
             print("Table {} exists.".format(table_Array))
@@ -66,31 +67,37 @@ def status_check():
 def get_dataframe_from_table(name_of_table):
     return pd.read_sql(f"SELECT * FROM {name_of_table}", connection)
 
-def update_user(user_id, name, email, password, gender, date_of_birth, height):
-        cursor = connection.cursor()
-        query = """
-            UPDATE users
-            SET name = %s,
-                email = %s,
-                password = %s,
-                gender = %s,
-                date_of_birth = %s,
-                height = %s
-            WHERE user_id = %s
-        """
-        cursor.execute(
-            query,
-            (name, email, password, gender, date_of_birth, height, user_id)
-        )
-        connection.commit()
-        cursor.close()
 
+def insert_row(table_name, values_dict):
+    columns = list(values_dict.keys())
+    values = list(values_dict.values())
 
-def get_user_by_id(user_id):
-        cursor = connection.cursor(dictionary=True)
-        query = "SELECT * FROM users WHERE user_id = %s"
-        cursor.execute(query, (user_id,))
-        user = cursor.fetchone()
-        cursor.close()
-        return user
+    placeholders = ", ".join(["%s"] * len(values))
+    column_names = ", ".join(columns)
 
+    query = f"INSERT INTO {table_name} ({column_names}) VALUES ({placeholders})"
+
+    cursor = connection.cursor()
+    cursor.execute(query, values)
+    connection.commit()
+    cursor.close()
+
+def get_row_by_id(table_name, primary_key, row_id):
+    cursor = connection.cursor(dictionary=True)
+    query = f"SELECT * FROM {table_name} WHERE {primary_key} = %s"
+    cursor.execute(query, (row_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    return row   
+
+def update_row(table_name, primary_key, row_id, values_dict):
+    set_clause = ", ".join([f"{col} = %s" for col in values_dict.keys()])
+    values = list(values_dict.values())
+    values.append(row_id)
+
+    query = f"UPDATE {table_name} SET {set_clause} WHERE {primary_key} = %s"
+
+    cursor = connection.cursor()
+    cursor.execute(query, values)
+    connection.commit()
+    cursor.close()
