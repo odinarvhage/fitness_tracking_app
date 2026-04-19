@@ -1,5 +1,5 @@
 import os
-
+import streamlit as st
 import pandas as pd
 
 import constants
@@ -7,7 +7,6 @@ import constants
 import mysql.connector
 from dotenv import load_dotenv
 
-tables = constants.tables
 load_dotenv()
 
 ip = os.getenv("DB_IP")
@@ -26,9 +25,6 @@ if not connection.is_connected:
     print("Please check your credentials and you are connected to the NTNU vpn and try again.")
     quit(0)
 
-
-def create_table(name):
-    pass
 #read_table assumes the table exists.
 def read_table(name):
     query = f"SELECT * FROM {name}"
@@ -37,30 +33,37 @@ def read_table(name):
     rows = cursor.fetchall()
     columns = [col[0] for col in cursor.description]
     cursor.close()
-    return pd.DataFrame(rows, columns=columns)
+    df = pd.DataFrame(rows, columns=columns)
+    if "password" in df.columns:
+        df = df.drop(columns=["password"])
+    return df
 
-
-
-def table_exists(table_name):
-    query = """
-       SELECT COUNT(*)
-       FROM information_schema.tables
-       WHERE table_schema = %s
-         AND table_name = %s
-       """
+def create_entry(table, values):
     cursor = connection.cursor()
-    cursor.execute(query, (connection.database, table_name))
-    exists = cursor.fetchone()[0] == 1
+    columns = read_table(table).columns
+    col_string = ", ".join(columns)
+    placeholders = ", ".join(["%s"] * (len(columns)-1))
+    query = f"INSERT INTO {table} ({col_string}) VALUES ({placeholders})"
+    print("Executing:", query)
+    print("Values:", values)
+    cursor.execute(query, values)
+    connection.commit()
     cursor.close()
-    return exists
 
-def status_check():
-    for tableArray in tables:
-     for table in tableArray:
-            if table_exists(table):
-                print("Table {} exists.".format(table))
-            else:
-                print("Table {} does not exist.".format(table))
+@st.dialog("CREATE entry")
+def make_entry_dialog():
+    table_name = st.selectbox("Choose a table", list(constants.create_tables.keys()))
+    data = {}
+    for col in constants.create_tables[table_name]:
+        data[col] = st.text_input(col)
+    if st.button("Submit"):
+        empty_fields = [col for col, val in data.items() if val.strip() == ""]
 
-def create_entry():
-    pass
+        if empty_fields:
+            st.error(f"These fields cannot be empty: {', '.join(empty_fields)}")
+        else:
+            st.session_state["new_entry"] = {
+                "data": data,
+                "table_name": table_name,
+            }
+            st.rerun()

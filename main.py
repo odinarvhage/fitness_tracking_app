@@ -1,9 +1,5 @@
-import sys
-from operator import truediv
-
 import streamlit as st
 
-import constants
 import tables
 
 
@@ -37,13 +33,13 @@ if user_button:
 #-------------------------
 # HEALTH RELATED DISPLAY
 #-------------------------
-if health_button:
+elif health_button:
     health_frame = st.dataframe(tables.read_table("health_metric"))
 
 #-------------------------
 # GOALS RELATED DISPLAY
 #-------------------------
-if goal_button:
+elif goal_button:
     goal_frame = st.dataframe(tables.read_table("goals"))
 
     sub_goals = col1, col2, col3, col4, col5= st.columns(5)
@@ -62,7 +58,7 @@ if goal_button:
 #-------------------------
 # WORKOUT RELATED DISPLAY
 #-------------------------
-if workout_button:
+elif workout_button:
     workout_frame = st.dataframe(tables.read_table("workout"))
     sub_workouts = col1, col2 = st.columns(2)
     with col1:
@@ -70,26 +66,29 @@ if workout_button:
     with col2:
         exercise_frame = st.dataframe(tables.read_table("exercises"))
 
-@st.dialog("CREATE entry")
-def create_entry():
-    table_name = st.selectbox("Choose a table", list(constants.tables.keys()))
 
 
-    inputs = {}
-    for col in constants.tables[table_name]:
-        inputs[col] = st.text_input(col)
+#-------------------------
+# CREATE ENTRY
+#-------------------------
+elif create_button:
+    tables.make_entry_dialog()
 
-    if st.button("Submit"):
-        st.write("You entered:")
-        st.json(inputs)
-        st.rerun()
-
-if create_button:
-    create_entry()
-if delete_button:
+#-------------------------
+# DELETE ENTRY
+#-------------------------
+elif delete_button:
     print("Deleting")
-if update_button:
+
+# -------------------------
+# UPDATE ENTRY / FIELD
+# -------------------------
+elif update_button:
     print("Updating")
-if sys.argv.__len__() > 1:
-    if sys.argv[1] == "status":
-        tables.status_check()
+
+
+if "new_entry" in st.session_state:
+    new_entry = st.session_state["new_entry"]
+    table = new_entry["table_name"]
+    tables.create_entry(table, st.session_state["new_entry"]["data"])
+    del st.session_state["new_entry"]
