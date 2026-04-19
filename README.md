@@ -28,7 +28,7 @@ Run
 
 Then, use pip to install streamlit:
 ```
-pip install streamlit
+pip install requirements.txt
 ```
 
 That should be everything, to execute the program run
