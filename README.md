@@ -1,6 +1,10 @@
 # Fitness tracking app project
 ## IDATG2002
-
+Group members: \
+Gabriel Brindle \
+Odin Arvhage \
+Didrik Christoffer Bråten \
+Sondre Odberg
 ## How to run
 Clone this repository.
 
@@ -28,7 +32,7 @@ Run
 
 Then, use pip to install streamlit:
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 That should be everything, to execute the program run
