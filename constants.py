@@ -1,9 +1,11 @@
-create_tables = {
-    "User": [
-        "Name","Password", "Email", "Gender", "Height", "Date of birth"
+
+DB_TABLE_COLUMNS = {
+    "users": [
+        "user_id", "name", "email", "password", "gender", "date_of_birth", "height"
+
     ],
-    "Workout": [
-        "Duration", "Type", "Calories burned", "Date"
+    "workout": [
+        "workout_id", "user_id", "duration", "type", "calories_burned", "workout_date"
     ],
     "Health metric": [
         "Weight", "Resting heart rate", "Average sleep", "Steps", "Date"
@@ -19,25 +21,74 @@ db_tables = {
     ],
     "health_metric": [
         "metric_id", "user_id", "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
+    ],
+    "goals": [
+        "goal_id", "user_id", "start_date", "deadline", "status"
+    ],
+    "weight_goals": [
+        "goal_id", "target_weight"
+    ],
+    "running_goals": [
+        "goal_id", "target_distance", "target_time"
+    ],
+    "sleep_goals": [
+        "goal_id", "target_sleep_duration"
+    ],
+    "steps_goals": [
+        "goal_id", "target_steps_per_day"
+    ],
+    "strength_goals": [
+        "goal_id", "target_weight", "target_reps", "exercise_id"
     ]
 }
 
-update_tables = {
+UPDATE_TABLE = {
     "users": [
-        "name", "email", "password", "gender", "height"
+         "name", "password", "gender", "height"
     ],
     "workout": [
         "duration", "type", "calories_burned", "workout_date"
     ],
     "health_metric": [
         "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
+    ],
+    "goals": [
+        "start_date", "deadline", "status"
+    ],
+    "weight_goals": [
+        "goal_id", "target_weight"
+    ],
+    "running_goals": [
+        "goal_id", "target_distance", "target_time"
+    ],
+    "sleep_goals": [
+        "goal_id", "target_sleep_duration"
+    ],
+    "steps_goals": [
+        "goal_id", "target_steps_per_day"
+    ],
+    "strength_goals": [
+        "goal_id", "target_weight", "target_reps", "exercise_id"
     ]
 }
 
-primary_key = {
+CREATE_TABLE = {
     "users": [
-        "user_id"
+         "name", "email", "password", "gender", "date_of_birth", "height"
     ]
 }
 
+PRIMARY_KEYS = {
+    "users": "user_id",
+    "workout": "workout_id",
+    "workout_entries": "workout_entry_id",
+    "exercises": "exercise_id",
+    "health_metric": "metric_id",
+    "goals": "goal_id",
+    "weight_goals": "goal_id",
+    "running_goals": "goal_id",
+    "sleep_goals": "goal_id",
+    "steps_goals": "goal_id",
+    "strength_goals": "goal_id"
+}
 

@@ -4,6 +4,17 @@
 ## How to run
 Clone this repository.
 
+add file ```.env```
+where contents would be:
+```
+DB_HOST={ip to database}
+DB_PORT=3306
+DB_NAME={database name}
+DB_USER={db username}
+DB_PASSWORD= {db password}
+
+```
+
 Then, go to your terminal and type
 ```
 python -m venv .venv
