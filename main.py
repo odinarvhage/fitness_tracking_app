@@ -3,7 +3,9 @@ from operator import truediv
 
 import streamlit as st
 
+import constants
 import tables
+
 
 st.set_page_config(
     page_title="Fitness Tracking App",
@@ -31,18 +33,17 @@ with col7:
 #-------------------------
 if user_button:
     user_frame = st.dataframe(tables.read_table("users"))
+
 #-------------------------
 # HEALTH RELATED DISPLAY
 #-------------------------
 if health_button:
-    startup = False
     health_frame = st.dataframe(tables.read_table("health_metric"))
 
 #-------------------------
 # GOALS RELATED DISPLAY
 #-------------------------
 if goal_button:
-    startup = False
     goal_frame = st.dataframe(tables.read_table("goals"))
 
     sub_goals = col1, col2, col3, col4, col5= st.columns(5)
@@ -62,7 +63,6 @@ if goal_button:
 # WORKOUT RELATED DISPLAY
 #-------------------------
 if workout_button:
-    startup = False
     workout_frame = st.dataframe(tables.read_table("workout"))
     sub_workouts = col1, col2 = st.columns(2)
     with col1:
@@ -70,9 +70,22 @@ if workout_button:
     with col2:
         exercise_frame = st.dataframe(tables.read_table("exercises"))
 
+@st.dialog("CREATE entry")
+def create_entry():
+    table_name = st.selectbox("Choose a table", list(constants.tables.keys()))
+
+
+    inputs = {}
+    for col in constants.tables[table_name]:
+        inputs[col] = st.text_input(col)
+
+    if st.button("Submit"):
+        st.write("You entered:")
+        st.json(inputs)
+        st.rerun()
 
 if create_button:
-    print("Creating")
+    create_entry()
 if delete_button:
     print("Deleting")
 if update_button:

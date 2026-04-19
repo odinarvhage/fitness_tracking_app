@@ -1,9 +1,9 @@
 tables = {
-    "users": [
-        "user_id", "name", "email", "password", "gender", "date_of_birth", "height"
+    "User": [
+        "Name","Password", "Gender", "Height"
     ],
-    "workout": [
-        "workout_id", "userid", "duration", "type", "calories_burned", "workout_date"
+    "Workout": [
+        "Duration", "Type", "Calories burned", "Date"
     ],
     "workout_entries": [
         "workout_entry_id", "workout_id", "exercise_id", "reps", "sets", "weight_used", "distance"
