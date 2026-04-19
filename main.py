@@ -58,6 +58,7 @@ elif page == "Goals":
     st.header("Goals")
     st.dataframe(tables.read_table("goals"), width='stretch')
 
+
     col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
         st.dataframe(tables.read_table("weight_goals"), width='stretch')
@@ -162,15 +163,25 @@ def update_entry():
             st.error(f"Could not update entry: {e}")
 
 
+#-------------------------
+# CREATE ENTRY
+#-------------------------
 if create_button:
     create_entry()
+
+#-------------------------
+# DELETE ENTRY
+#-------------------------
 if delete_button:
     print("Deleting")
+
+# -------------------------
+# UPDATE ENTRY / FIELD
+# -------------------------
 if update_button:
     update_entry()
 if sys.argv.__len__() > 1:
     if sys.argv[1] == "status":
         tables.status_check()
-
 
 

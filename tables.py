@@ -1,5 +1,5 @@
 import os
-
+import streamlit as st
 import pandas as pd
 
 import constants
@@ -8,6 +8,7 @@ import mysql.connector
 from dotenv import load_dotenv
 
 tables = constants.DB_TABLE_COLUMNS
+
 load_dotenv()
 
 ip = os.getenv("DB_IP")
@@ -30,7 +31,6 @@ if not connection.is_connected():
 def create_table(name):
     pass
 
-
 def read_table(name):
     query = f"SELECT * FROM {name}"
     cursor = connection.cursor()
@@ -38,22 +38,22 @@ def read_table(name):
     rows = cursor.fetchall()
     columns = [col[0] for col in cursor.description]
     cursor.close()
-    return pd.DataFrame(rows, columns=columns)
+    df = pd.DataFrame(rows, columns=columns)
+    if "password" in df.columns:
+        df = df.drop(columns=["password"])
+    return df
 
-
-
-def table_exists(table_name):
-    query = """
-       SELECT COUNT(*)
-       FROM information_schema.tables
-       WHERE table_schema = %s
-         AND table_name = %s
-       """
+def create_entry(table, values):
     cursor = connection.cursor()
-    cursor.execute(query, (connection.database, table_name))
-    exists = cursor.fetchone()[0] == 1
+    columns = read_table(table).columns
+    col_string = ", ".join(columns)
+    placeholders = ", ".join(["%s"] * (len(columns)-1))
+    query = f"INSERT INTO {table} ({col_string}) VALUES ({placeholders})"
+    print("Executing:", query)
+    print("Values:", values)
+    cursor.execute(query, values)
+    connection.commit()
     cursor.close()
-    return exists
 
 def status_check():
 
@@ -101,3 +101,22 @@ def update_row(table_name, primary_key, row_id, values_dict):
     cursor.execute(query, values)
     connection.commit()
     cursor.close()
+
+
+@st.dialog("CREATE entry")
+def make_entry_dialog():
+    table_name = st.selectbox("Choose a table", list(constants.create_tables.keys()))
+    data = {}
+    for col in constants.create_tables[table_name]:
+        data[col] = st.text_input(col)
+    if st.button("Submit"):
+        empty_fields = [col for col, val in data.items() if val.strip() == ""]
+
+        if empty_fields:
+            st.error(f"These fields cannot be empty: {', '.join(empty_fields)}")
+        else:
+            st.session_state["new_entry"] = {
+                "data": data,
+                "table_name": table_name,
+            }
+            st.rerun()

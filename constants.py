@@ -2,15 +2,22 @@
 DB_TABLE_COLUMNS = {
     "users": [
         "user_id", "name", "email", "password", "gender", "date_of_birth", "height"
+
     ],
     "workout": [
         "workout_id", "user_id", "duration", "type", "calories_burned", "workout_date"
     ],
-    "workout_entries": [
-        "workout_entry_id", "workout_id", "exercise_id", "reps", "sets", "weight_used", "distance"
+    "Health metric": [
+        "Weight", "Resting heart rate", "Average sleep", "Steps", "Date"
+    ]
+}
+
+db_tables = {
+    "users": [
+        "user_id", "name","email","password", "gender", "date_of_birth", "height"
     ],
-    "exercises": [
-        "exercise_id", "name", "description"
+    "workout": [
+        "workout_id", "user_id", "duration", "type", "calories_burned", "workout_date"
     ],
     "health_metric": [
         "metric_id", "user_id", "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
@@ -38,6 +45,30 @@ DB_TABLE_COLUMNS = {
 UPDATE_TABLE = {
     "users": [
          "name", "password", "gender", "height"
+    ],
+    "workout": [
+        "duration", "type", "calories_burned", "workout_date"
+    ],
+    "health_metric": [
+        "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
+    ],
+    "goals": [
+        "start_date", "deadline", "status"
+    ],
+    "weight_goals": [
+        "goal_id", "target_weight"
+    ],
+    "running_goals": [
+        "goal_id", "target_distance", "target_time"
+    ],
+    "sleep_goals": [
+        "goal_id", "target_sleep_duration"
+    ],
+    "steps_goals": [
+        "goal_id", "target_steps_per_day"
+    ],
+    "strength_goals": [
+        "goal_id", "target_weight", "target_reps", "exercise_id"
     ]
 }
 
@@ -60,3 +91,4 @@ PRIMARY_KEYS = {
     "steps_goals": "goal_id",
     "strength_goals": "goal_id"
 }
+
