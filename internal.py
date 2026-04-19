@@ -7,8 +7,6 @@ import constants
 import mysql.connector
 from dotenv import load_dotenv
 
-tables = constants.DB_TABLE_COLUMNS
-
 load_dotenv()
 
 ip = os.getenv("DB_IP")
@@ -32,7 +30,6 @@ def read_table(name):
     query = f"SELECT * FROM {name}"
     cursor = connection.cursor()
     cursor.execute(query)
-    print("Fetched table " + name)
     rows = cursor.fetchall()
     columns = [col[0] for col in cursor.description]
     cursor.close()
@@ -108,6 +105,12 @@ def make_entry_dialog():
             st.rerun()
 
 
+def delete_entry(table, primary_key):
+    cursor = connection.cursor()
+    row = constants.PRIMARY_KEYS[table]
+    sql = f"DELETE FROM `{table}` WHERE `{row}` = %s"
+    cursor.execute(sql, (primary_key,))
+    connection.commit()
 # -------------------------
 # DISPLAYS A POP UP DIALOG FOR UPDATE
 # -------------------------
@@ -148,25 +151,37 @@ def update_entry():
     if submitted:
         try:
             update_row(table_name, primary_key, selected_id, updated_values)
-            st.success(f"Updated entry in {table_name}")
             st.rerun()
         except Exception as e:
             st.error(f"Could not update entry: {e}")
 
-#-------------------------
-# DISPLAYS A POP UP DIALOG FOR CREATE
-#-------------------------
-@st.dialog("CREATE entry")
-def create_entry():
-    table_name = st.selectbox("Choose a table", list(constants.CREATE_TABLE.keys()))
 
-    inputs = {}
-    for col in constants.CREATE_TABLE[table_name]:
-        inputs[col] = st.text_input(col)
+@st.dialog("DELETE entry")
+def make_delete_dialog():
+    table_name = st.selectbox("Choose a table", list(constants.db_tables.keys()))
 
-    if st.button("Submit"):
-        st.write("You entered:")
-        st.json(inputs)
-        st.rerun()
+    primary_key = constants.PRIMARY_KEYS[table_name]
+    table = read_table(table_name)
 
+    if table.empty:
+        st.info(f"No rows in {table_name}")
+        return
 
+    row_ids = table[primary_key].tolist()
+    selected_id = st.selectbox(f"Choose {primary_key}", row_ids, key="update_row_id")
+
+    selected_row = get_row_by_id(table_name, primary_key, selected_id)
+    if not selected_row:
+        st.error("Could not find selected row.")
+        return
+
+    st.json(selected_row)
+    deleted = st.button("Delete")
+
+    if deleted:
+        try:
+            delete_entry(table_name, selected_id)
+            st.rerun()
+
+        except Exception as e:
+            st.error(f"Could not delete entry: {e}")

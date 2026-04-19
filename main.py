@@ -110,7 +110,7 @@ if create_button:
 # DELETE ENTRY
 #-------------------------
 if delete_button:
-    print("Deleting")
+    internal.make_delete_dialog()
 
 # -------------------------
 # UPDATE ENTRY / FIELD

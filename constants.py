@@ -1,17 +1,3 @@
-
-DB_TABLE_COLUMNS = {
-    "users": [
-        "user_id", "name", "email", "password", "gender", "date_of_birth", "height"
-
-    ],
-    "workout": [
-        "workout_id", "user_id", "duration", "type", "calories_burned", "workout_date"
-    ],
-    "Health metric": [
-        "Weight", "Resting heart rate", "Average sleep", "Steps", "Date"
-    ]
-}
-
 db_tables = {
     "users": [
         "user_id", "name","email","password", "gender", "date_of_birth", "height"
@@ -73,15 +59,15 @@ UPDATE_TABLE = {
 }
 
 CREATE_TABLE = {
-    "User": [
-        "Name","Password", "Email", "Gender", "Height", "Date of birth"
+    "users": [
+        "name", "password", "email", "gender", "height", "date_of_birth"
     ],
-    "Workout": [
-        "Duration", "Type", "Calories burned", "Date"
+    "workout": [
+        "duration", "type", "calories_burned", "workout_date"
     ],
-    "Health metric": [
-        "Weight", "Resting heart rate", "Average sleep", "Steps", "Date"
-    ]
+    "health_metrics": [
+        "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
+    ],
 }
 
 PRIMARY_KEYS = {
