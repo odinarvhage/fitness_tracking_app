@@ -21,7 +21,8 @@ with col3:
 with col4:
     workout_button = st.button("Workout")
 
-user_frame = st.dataframe(tables.read_table("users"))
+if not goal_button | health_button | workout_button:
+    user_frame = st.dataframe(tables.read_table("users"))
 if health_button:
     health_frame = st.dataframe(tables.read_table("health_metric"))
 
@@ -40,8 +41,7 @@ if goal_button:
     with col5:
         step_frame = st.dataframe(tables.read_table("steps_goals"))
 
-if user_button:
-    user_frame = st.dataframe(tables.read_table("users"))
+
 
 if workout_button:
     workout_frame = st.dataframe(tables.read_table("workout"))
