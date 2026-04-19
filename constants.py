@@ -24,13 +24,19 @@ db_tables = {
 
 update_tables = {
     "users": [
-        "user_id", "name", "email", "password", "gender", "date_of_birth", "height"
+        "name", "email", "password", "gender", "height"
     ],
     "workout": [
-        "workout_id", "user_id", "duration", "type", "calories_burned", "workout_date"
+        "duration", "type", "calories_burned", "workout_date"
     ],
     "health_metric": [
-        "metric_id", "user_id", "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
+        "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
+    ]
+}
+
+primary_key = {
+    "users": [
+        "user_id"
     ]
 }
 
