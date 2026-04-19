@@ -46,6 +46,7 @@ CREATE_TABLE = {
          "name", "email", "password", "gender", "date_of_birth", "height"
     ]
 }
+
 PRIMARY_KEYS = {
     "users": "user_id",
     "workout": "workout_id",
