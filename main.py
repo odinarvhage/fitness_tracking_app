@@ -104,7 +104,7 @@ elif page == "Workout":
 # CREATE ENTRY
 #-------------------------
 if create_button:
-    internal.create_entry()
+    internal.make_entry_dialog()
 
 #-------------------------
 # DELETE ENTRY

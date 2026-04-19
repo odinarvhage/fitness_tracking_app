@@ -1,3 +1,4 @@
+import datetime
 import os
 import streamlit as st
 import pandas as pd
@@ -6,7 +7,6 @@ import constants
 
 import mysql.connector
 from dotenv import load_dotenv
-
 load_dotenv()
 
 ip = os.getenv("DB_IP")
@@ -39,7 +39,28 @@ def read_table(name):
     return df
 
 def create_entry(table, values):
-    pass
+
+    real_table = constants.db_tables[table]
+    insert_columns = []
+    insert_values = []
+
+    for col in real_table:
+        if "id" in col:
+            continue
+        if col in values:
+            insert_columns.append(col)
+            if "date" in col:
+                insert_values.append(str(values[col]))
+            else:
+                insert_values.append(values[col])
+
+    col_sql = ", ".join(f"`{c}`" for c in insert_columns)
+    placeholders = ", ".join(["%s"] * len(insert_columns))
+    query = f"INSERT INTO {table} ({col_sql}) VALUES ({placeholders})"
+    cursor = connection.cursor()
+    cursor.execute(query, insert_values)
+    connection.commit()
+    cursor.close()
 
 def get_insertable_columns(table_name, db_tables):
     columns = db_tables[table_name]
@@ -89,20 +110,32 @@ def update_row(table_name, primary_key, row_id, values_dict):
 @st.dialog("CREATE entry")
 def make_entry_dialog():
     table_name = st.selectbox("Choose a table", list(constants.CREATE_TABLE.keys()))
-    data = {}
-    for col in constants.CREATE_TABLE[table_name]:
-        data[col] = st.text_input(col)
-    if st.button("Submit"):
-        empty_fields = [col for col, val in data.items() if val.strip() == ""]
+    with st.form("create_entry"):
+        values = {}
+        for key in constants.CREATE_TABLE[table_name]:
+            if "date" in key:
+                values[key] = st.date_input(key,   min_value=datetime.date(1900, 1, 1))
+            elif "gender" in key:
+                values[key] = st.selectbox("gender", ["Male", "Female", "Non-binary", "Prefer not to say"])
+            else:
+                values[key] = st.text_input(key)
+        submit_button = st.form_submit_button("create")
 
-        if empty_fields:
-            st.error(f"These fields cannot be empty: {', '.join(empty_fields)}")
-        else:
-            st.session_state["new_entry"] = {
-                "data": data,
-                "table_name": table_name,
-            }
+    if submit_button:
+        missing = []
+        for key, val in values.items():
+            if isinstance(val, str) and val.strip() == "":
+                missing.append(key)
+            if "date" in key and val is None:
+                missing.append(key)
+        if missing:
+            st.error(f"These fields cannot be empty: {', '.join(missing)}")
+            return
+        try:
+            create_entry(table_name, values)
             st.rerun()
+        except Exception as e:
+            st.error(f"Could not create entry. {e}")
 
 
 def delete_entry(table, primary_key):
