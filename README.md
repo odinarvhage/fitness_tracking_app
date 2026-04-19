@@ -1,5 +1,6 @@
 # Fitness tracking app project
-## IDATG2002
+## IDATG2002 - Group 5
+
 Group members: \
 Gabriel Brindle \
 Odin Arvhage \
