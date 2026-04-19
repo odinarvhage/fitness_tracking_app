@@ -21,7 +21,7 @@ connection = mysql.connector.connect(
     password=password,
     database=database)
 
-if not connection.is_connected:
+if not connection.is_connected():
     print("Error connecting to MySQL database.")
     print("Please check your credentials and you are connected to the NTNU vpn and try again.")
     quit(0)
@@ -50,12 +50,11 @@ def table_exists(table_name):
     return exists
 
 def status_check():
-    for tableArray in tables:
-     for table in tableArray:
-            if table_exists(table):
-                print("Table {} exists.".format(table))
-            else:
-                print("Table {} does not exist.".format(table))
+    for table_Array in tables:
+     if table_exists(table_Array):
+            print("Table {} exists.".format(table_Array))
+     else:
+            print("Table {} does not exist.".format(table_Array))
 
 
 def get_dataframe_from_table(name_of_table):
