@@ -32,7 +32,12 @@ def create_table(name):
 #read_table assumes the table exists.
 def read_table(name):
     query = f"SELECT * FROM {name}"
-    return pd.read_sql(query, connection)
+    cursor = connection.cursor()
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    columns = [col[0] for col in cursor.description]
+    cursor.close()
+    return pd.DataFrame(rows, columns=columns)
 
 
 
