@@ -69,10 +69,10 @@ CREATE_TABLE = {
         "name", "password", "email", "gender", "height", "date_of_birth"
     ],
     "workout": [
-        "duration", "type", "calories_burned", "workout_date"
+        "user_id","duration", "type", "calories_burned", "workout_date"
     ],
-    "health_metrics": [
-        "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
+    "health_metric": [
+        "user_id","weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
     ],
 }
 
