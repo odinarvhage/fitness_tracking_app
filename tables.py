@@ -61,3 +61,6 @@ def status_check():
                 print("Table {} exists.".format(table))
             else:
                 print("Table {} does not exist.".format(table))
+
+def create_entry():
+    pass

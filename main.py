@@ -1,4 +1,5 @@
 import sys
+from operator import truediv
 
 import streamlit as st
 
@@ -10,8 +11,7 @@ st.set_page_config(
 )
 
 st.title("Fitness Tracking App Demo - Group 5")
-buttons = col1, col2, col3, col4 = st.columns(4)
-
+buttons = col1, col2, col3, col4, col5, col6, col7= st.columns(7)
 with col1:
     health_button = st.button("Health")
 with col2:
@@ -20,13 +20,29 @@ with col3:
     user_button = st.button("User")
 with col4:
     workout_button = st.button("Workout")
-
-if not goal_button | health_button | workout_button:
+with col5:
+    create_button = st.button("CREATE")
+with col6:
+    delete_button = st.button("DELETE")
+with col7:
+    update_button = st.button("UPDATE")
+#-------------------------
+# USER RELATED DISPLAY
+#-------------------------
+if user_button:
     user_frame = st.dataframe(tables.read_table("users"))
+#-------------------------
+# HEALTH RELATED DISPLAY
+#-------------------------
 if health_button:
+    startup = False
     health_frame = st.dataframe(tables.read_table("health_metric"))
 
+#-------------------------
+# GOALS RELATED DISPLAY
+#-------------------------
 if goal_button:
+    startup = False
     goal_frame = st.dataframe(tables.read_table("goals"))
 
     sub_goals = col1, col2, col3, col4, col5= st.columns(5)
@@ -42,8 +58,11 @@ if goal_button:
         step_frame = st.dataframe(tables.read_table("steps_goals"))
 
 
-
+#-------------------------
+# WORKOUT RELATED DISPLAY
+#-------------------------
 if workout_button:
+    startup = False
     workout_frame = st.dataframe(tables.read_table("workout"))
     sub_workouts = col1, col2 = st.columns(2)
     with col1:
@@ -52,6 +71,12 @@ if workout_button:
         exercise_frame = st.dataframe(tables.read_table("exercises"))
 
 
+if create_button:
+    print("Creating")
+if delete_button:
+    print("Deleting")
+if update_button:
+    print("Updating")
 if sys.argv.__len__() > 1:
     if sys.argv[1] == "status":
         tables.status_check()
