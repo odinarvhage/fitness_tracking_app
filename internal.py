@@ -28,9 +28,6 @@ if not connection.is_connected():
     quit(0)
 
 
-def create_table(name):
-    pass
-
 def read_table(name):
     query = f"SELECT * FROM {name}"
     cursor = connection.cursor()
@@ -49,16 +46,8 @@ def create_entry(table, values):
 
 def get_insertable_columns(table_name, db_tables):
     columns = db_tables[table_name]
-    AUTO_SKIP = {"user_id", "workout_id", "metric_id"}
-    return [col for col in columns if col not in AUTO_SKIP]
-
-def status_check():
-
-    for table_Array in tables:
-     if table_exists(table_Array):
-            print("Table {} exists.".format(table_Array))
-     else:
-            print("Table {} does not exist.".format(table_Array))
+    auto_skip = {"user_id", "workout_id", "metric_id"}
+    return [col for col in columns if col not in auto_skip]
 
 
 def get_dataframe_from_table(name_of_table):
@@ -102,9 +91,9 @@ def update_row(table_name, primary_key, row_id, values_dict):
 
 @st.dialog("CREATE entry")
 def make_entry_dialog():
-    table_name = st.selectbox("Choose a table", list(constants.create_tables.keys()))
+    table_name = st.selectbox("Choose a table", list(constants.CREATE_TABLE.keys()))
     data = {}
-    for col in constants.create_tables[table_name]:
+    for col in constants.CREATE_TABLE[table_name]:
         data[col] = st.text_input(col)
     if st.button("Submit"):
         empty_fields = [col for col, val in data.items() if val.strip() == ""]
@@ -117,3 +106,67 @@ def make_entry_dialog():
                 "table_name": table_name,
             }
             st.rerun()
+
+
+# -------------------------
+# DISPLAYS A POP UP DIALOG FOR UPDATE
+# -------------------------
+@st.dialog("UPDATE entry")
+def update_entry():
+    table_name = st.selectbox("Choose a table", list(constants.UPDATE_TABLE.keys()))
+
+    primary_key = constants.PRIMARY_KEYS[table_name]
+    df = read_table(table_name)
+
+    if df.empty:
+        st.info(f"No rows in {table_name}")
+        return
+
+    if primary_key not in df.columns:
+        st.error(f"Primary key '{primary_key}' not found in dataframe columns: {df.columns.tolist()}")
+        return
+
+    row_ids = df[primary_key].tolist()
+    selected_id = st.selectbox(f"Choose {primary_key}", row_ids, key="update_row_id")
+
+    selected_row = get_row_by_id(table_name, primary_key, selected_id)
+    if not selected_row:
+        st.error("Could not find selected row.")
+        return
+
+    updated_values = {}
+
+    with st.form("update_form"):
+        for col in constants.UPDATE_TABLE[table_name]:
+            if col == primary_key:
+                continue
+            updated_values[col] = st.text_input(col,
+                                                value=str(selected_row[col]) if selected_row[col] is not None else "")
+
+        submitted = st.form_submit_button("Update")
+
+    if submitted:
+        try:
+            update_row(table_name, primary_key, selected_id, updated_values)
+            st.success(f"Updated entry in {table_name}")
+            st.rerun()
+        except Exception as e:
+            st.error(f"Could not update entry: {e}")
+
+#-------------------------
+# DISPLAYS A POP UP DIALOG FOR CREATE
+#-------------------------
+@st.dialog("CREATE entry")
+def create_entry():
+    table_name = st.selectbox("Choose a table", list(constants.CREATE_TABLE.keys()))
+
+    inputs = {}
+    for col in constants.CREATE_TABLE[table_name]:
+        inputs[col] = st.text_input(col)
+
+    if st.button("Submit"):
+        st.write("You entered:")
+        st.json(inputs)
+        st.rerun()
+
+
