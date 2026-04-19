@@ -21,6 +21,7 @@ with col3:
 with col4:
     workout_button = st.button("Workout")
 
+user_frame = st.dataframe(tables.read_table("users"))
 if health_button:
     health_frame = st.dataframe(tables.read_table("health_metric"))
 
