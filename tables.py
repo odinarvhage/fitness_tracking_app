@@ -29,7 +29,8 @@ if not connection.is_connected():
 
 def create_table(name):
     pass
-#read_table assumes the table exists.
+
+
 def read_table(name):
     query = f"SELECT * FROM {name}"
     cursor = connection.cursor()
@@ -64,3 +65,32 @@ def status_check():
 
 def get_dataframe_from_table(name_of_table):
     return pd.read_sql(f"SELECT * FROM {name_of_table}", connection)
+
+def update_user(user_id, name, email, password, gender, date_of_birth, height):
+        cursor = connection.cursor()
+        query = """
+            UPDATE users
+            SET name = %s,
+                email = %s,
+                password = %s,
+                gender = %s,
+                date_of_birth = %s,
+                height = %s
+            WHERE user_id = %s
+        """
+        cursor.execute(
+            query,
+            (name, email, password, gender, date_of_birth, height, user_id)
+        )
+        connection.commit()
+        cursor.close()
+
+
+def get_user_by_id(user_id):
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT * FROM users WHERE user_id = %s"
+        cursor.execute(query, (user_id,))
+        user = cursor.fetchone()
+        cursor.close()
+        return user
+
