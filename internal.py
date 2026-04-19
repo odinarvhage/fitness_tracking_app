@@ -2,6 +2,7 @@ import datetime
 import os
 import streamlit as st
 import pandas as pd
+import plotly.graph_objects as go
 
 import constants
 
@@ -217,3 +218,47 @@ def make_delete_dialog():
 
         except Exception as e:
             st.error(f"Could not delete entry: {e}")
+
+def get_insights():
+    query = (
+        "SELECT w.type "
+        "AS workout_type,"
+        "AVG(w.calories_burned) " #Aggregate
+        "AS avg_calories_burned, "
+        "COUNT(w.workout_id) " #Aggregate
+        "AS total_sessions "
+        "FROM workout w "
+        "JOIN users u " #Join
+        "ON w.user_id = u.user_id "
+        "GROUP BY w.type;")
+    cursor = connection.cursor()
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    cursor.close()
+    return rows
+
+@st.dialog("Average calories burned per workout type")
+def display_bar_chart(data):
+    workout_types = [row[0] for row in data]
+    avg_calories = [float(row[1]) for row in data]  # convert Decimal → float
+
+    # Create bar chart
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                x=workout_types,
+                y=avg_calories,
+                marker_color="blue"
+            )
+        ]
+    )
+
+    fig.update_layout(
+        title="Average Calories Burned per Workout Type",
+        xaxis_title="Workout Type",
+        yaxis_title="Avg Calories Burned",
+        template="plotly_white",
+        xaxis_tickangle=-45
+    )
+
+    fig.show()

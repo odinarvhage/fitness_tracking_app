@@ -1,7 +1,6 @@
 import streamlit as st
 import internal
 
-
 st.set_page_config(
     page_title="Fitness Tracking App",
     layout="wide"
@@ -14,7 +13,7 @@ if "page" not in st.session_state:
     st.session_state.page = "User"
 
 
-buttons = col1, col2, col3, col4, col5, col6, col7= st.columns(7)
+buttons = col1, col2, col3, col4, col5, col6, col7, col8= st.columns(8)
 
 
 
@@ -33,10 +32,13 @@ with col4:
     if st.button("Workout"):
         st.session_state.page = "Workout"
 with col5:
-    create_button = st.button("CREATE")
+    if st.button("Insights"):
+        st.session_state.page = "Insights"
 with col6:
-    delete_button = st.button("DELETE")
+    create_button = st.button("CREATE")
 with col7:
+    delete_button = st.button("DELETE")
+with col8:
     update_button = st.button("UPDATE")
 
 page = st.session_state.page
@@ -98,8 +100,9 @@ elif page == "Workout":
         st.dataframe(internal.read_table("exercises"), width='stretch')
 
 
-
-
+elif page == "Insights":
+    st.header("Insights")
+    internal.display_bar_chart(internal.get_insights())
 #-------------------------
 # CREATE ENTRY
 #-------------------------
