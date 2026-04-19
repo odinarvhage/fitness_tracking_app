@@ -107,12 +107,11 @@ def update_row(table_name, primary_key, row_id, values_dict):
     cursor.close()
 
 
-@st.dialog("CREATE entry")
+@st.dialog("CREATE user")
 def make_entry_dialog():
-    table_name = st.selectbox("Choose a table", list(constants.CREATE_TABLE.keys()))
     with st.form("create_entry"):
         values = {}
-        for key in constants.CREATE_TABLE[table_name]:
+        for key in constants.CREATE_TABLE["users"]:
             if "date" in key:
                 values[key] = st.date_input(key,   min_value=datetime.date(1900, 1, 1))
             elif "gender" in key:
@@ -132,7 +131,7 @@ def make_entry_dialog():
             st.error(f"These fields cannot be empty: {', '.join(missing)}")
             return
         try:
-            create_entry(table_name, values)
+            create_entry("users", values)
             st.rerun()
         except Exception as e:
             st.error(f"Could not create entry. {e}")
