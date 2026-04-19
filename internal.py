@@ -3,6 +3,7 @@ import os
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 
 import constants
 
@@ -237,7 +238,6 @@ def get_insights():
     cursor.close()
     return rows
 
-@st.dialog("Average calories burned per workout type")
 def display_bar_chart(data):
     workout_types = [row[0] for row in data]
     avg_calories = [float(row[1]) for row in data]  # convert Decimal → float
@@ -260,5 +260,14 @@ def display_bar_chart(data):
         template="plotly_white",
         xaxis_tickangle=-45
     )
+    return plotly_to_pyplot(fig)
 
-    fig.show()
+def plotly_to_pyplot(fig):
+    trace = fig.data[0]
+    x = trace.x
+    y = trace.y
+    plt.figure(figsize=(8, 5))
+    plt.bar(x, y, color="red")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    return plt.gcf()

@@ -102,7 +102,8 @@ elif page == "Workout":
 
 elif page == "Insights":
     st.header("Insights")
-    internal.display_bar_chart(internal.get_insights())
+    chart = internal.display_bar_chart(internal.get_insights())
+    st.pyplot(chart)
 #-------------------------
 # CREATE ENTRY
 #-------------------------
