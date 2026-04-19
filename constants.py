@@ -5,6 +5,12 @@ db_tables = {
     "workout": [
         "workout_id", "user_id", "duration", "type", "calories_burned", "workout_date"
     ],
+    "workout_entries": [
+        "workout_entry_id", "workout_id","exercise_id","reps","sets","weights_used","distance"
+    ],
+    "exercises": [
+       "exercise_id" ,"name","description"
+    ],
     "health_metric": [
         "metric_id", "user_id", "weight", "resting_heart_rate", "average_sleep", "steps", "recorded_date"
     ],
